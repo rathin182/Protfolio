@@ -108,7 +108,7 @@ const Hero = () => {
         <div className='bg-[#02070b] relative overflow-hidden h-full w-full'>
             <HeroBackground />
             {/* Navigation */}
-            <div className='flex items-center justify-between m-2'>
+            <header className='fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 '>
                 <div className='px-20 py-3'>
                     <Image src="/logonobg2.png" alt="Vercel Logo" width={70} height={24} />
                 </div>
@@ -166,7 +166,7 @@ const Hero = () => {
 
                     </button>
                 </div>
-            </div>
+            </header>
 
 
             {/* main Section */}
@@ -174,7 +174,7 @@ const Hero = () => {
                 style={{
                     fontFamily: "var(--font-open-sans)",
                 }}
-                className='px-10 flex items-center justify-between'>
+                className='px-10 flex items-center justify-between mt-10'>
                 <div className='flex flex-col gap-4'>
                     {/* Main Heading */}
                     <HeroText />
@@ -276,7 +276,7 @@ const Hero = () => {
                             alt="hero"
                             width={600}
                             height={600}
-                            className="relative z-10"
+                            className="relative z-10 -mb-2"
                         />
                     </div>
 
