@@ -8,10 +8,37 @@ import HeroText from '@/app/components/animation/HeroText';
 import { Canvas } from "@react-three/fiber";
 import HeroParticles from '@/app/components/animation/HeroParticles';
 import HeroBackground from '@/app/components/animation/HeroBackground';
+import TechStackCards from '@/app/components/TechStackCards';
 
 const middleText = "Web Applications";
-const topText = "I Build Scalable";
-const bottomText = "That Solve Real Problems";
+
+const techStack = [
+    {
+        src: "/logos/image.png",
+        label: "Node Js",
+        type: "node",
+    },
+    {
+        src: "/logos/image copy.png",
+        label: "Docker",
+        type: "docker",
+    },
+    {
+        src: "/logos/image copy 8.png",
+        label: "React Js",
+        type: "react",
+    },
+    {
+        src: "/logos/image copy 10.png",
+        label: "PostgreSQL",
+        type: "postgres",
+    },
+    {
+        src: "/logos/image copy 2.png",
+        label: "Redis",
+        type: "redis",
+    },
+];
 
 const Hero = () => {
     const navItems = ["Home", "About", "Projects", "Services", "Skills"];
@@ -78,7 +105,8 @@ const Hero = () => {
     }, [typedText, phase]);
 
     return (
-        <div className='bg-[#02070b] h-full w-full'>
+        <div className='bg-[#02070b] relative overflow-hidden h-full w-full'>
+            <HeroBackground />
             {/* Navigation */}
             <div className='flex items-center justify-between m-2'>
                 <div className='px-20 py-3'>
@@ -90,6 +118,9 @@ const Hero = () => {
                             <li
                                 key={item}
                                 onClick={() => handleClick(item)}
+                                style={{
+                                    fontFamily: "var(--font-playwrite)",
+                                }}
                                 className={`relative cursor-pointer text-xl transition-all duration-300 ${active === item ? "text-[#52ca56]" : "text-white"
                                     }`}
                             >
@@ -120,7 +151,11 @@ const Hero = () => {
                         <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-[inset_0_0_20px_rgba(82,202,86,0.2)]"></span>
 
                         {/* Content */}
-                        <div className="relative z-10 flex items-center gap-2">
+                        <div
+                            style={{
+                                fontFamily: "var(--font-playwrite)",
+                            }}
+                            className="relative z-10 flex items-center gap-2">
                             <span className="transition-transform duration-300 group-hover:translate-x-1">
                                 <Send size={16} />
                             </span>
@@ -135,20 +170,14 @@ const Hero = () => {
 
 
             {/* main Section */}
-            <main className='px-10 flex items-center justify-between'>
+            <main
+                style={{
+                    fontFamily: "var(--font-open-sans)",
+                }}
+                className='px-10 flex items-center justify-between'>
                 <div className='flex flex-col gap-4'>
                     {/* Main Heading */}
-                    <section className="relative overflow-hidden bg-[#02070b]">
-
-                        {/* Three.js Layer */}
-                        <HeroBackground />
-
-                        {/* Content Layer */}
-                        <div className="relative z-10 flex items-center px-10">
-                            <HeroText />
-                        </div>
-
-                    </section>
+                    <HeroText />
                     {/* Sub Heading */}
                     <div className='flex flex-col '>
                         <span className='text-xl'>Full Stack Developer specializing in building modern web</span>
@@ -233,7 +262,7 @@ const Hero = () => {
                         </div>
                     </div>
                 </div>
-                <div className="relative flex items-center justify-center bg-[#02070B] mr-90">
+                <div className="relative flex items-center justify-center mr-90">
 
                     {/* CENTER HERO */}
                     <div className="relative z-10 flex items-center justify-center">
@@ -252,40 +281,7 @@ const Hero = () => {
                     </div>
 
                     {/* RIGHT LOGOS (FORCED ABOVE EVERYTHING) */}
-                    <div className="absolute -right-20 top-70 -translate-y-1/2 flex flex-col gap-4 z-50">
-
-                        {[
-                            { src: "/logos/image.png", label: "Node Js" },
-                            { src: "/logos/image copy.png", label: "React Js" },
-                            { src: "/logos/image copy 8.png", label: "Docker" },
-                            { src: "/logos/image copy 10.png", label: "PostgreSQL" },
-                            { src: "/logos/image copy 2.png", label: "Redis" },
-                        ].map((item, i) => (
-                            <div
-                                key={i}
-                                className="relative flex items-center gap-2 px-4 py-2 rounded-full border border-[#52ca56]/30 backdrop-blur-md bg-[#0b1418]/80 overflow-hidden transition-all duration-300 hover:scale-110 hover:-translate-y-1 hover:border-[#52ca56]/60 hover:shadow-[0_0_25px_rgba(82,202,86,0.25)]"
-                                style={{
-                                    marginLeft: `${i * 14}px`,
-                                    transform: `translateX(${i * 6}px) rotate(${i * 1.2}deg)`,
-                                }}
-                            >
-
-                                {/* ✨ Glass Shine Effect */}
-                                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg] group-hover:translate-x-full transition-transform duration-700" />
-
-                                {/* Icon */}
-                                <Image src={item.src} alt="icon" width={28} height={28} />
-
-                                {/* Label */}
-                                <span className="text-white text-sm relative z-10">
-                                    {item.label}
-                                </span>
-
-                            </div>
-                        ))}
-
-                    </div>
-
+                    <TechStackCards />
                 </div>
             </main>
 

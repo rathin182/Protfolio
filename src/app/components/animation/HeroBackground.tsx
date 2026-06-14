@@ -9,7 +9,7 @@ export default function HeroBackground() {
     <div className="absolute inset-0">
       <Canvas camera={{ position: [0, 0, 8] }}>
         <HeroParticles />
-        <ShootingStar />
+        {/* <ShootingStar /> */}
       </Canvas>
     </div>
   );

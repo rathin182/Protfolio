@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playwrite_GB_S, Luxurious_Script, Great_Vibes, Playfair_Display, Open_Sans } from "next/font/google";
 import "./globals.css";
+import SmoothScroll from "@/app/components/animation/SmoothScroll";
+import CursorOrb from "@/app/components/animation/CursorOrb";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -10,6 +12,29 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const playwrite = Playwrite_GB_S({
+  variable: "--font-playwrite",
+});
+
+const luxuriousScript = Luxurious_Script({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-luxurious-script",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-playfair",
+});
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: "500",
+  variable: "--font-open-sans",
 });
 
 export const metadata: Metadata = {
@@ -25,9 +50,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${openSans.variable} ${geistSans.variable} ${geistMono.variable} ${playwrite.variable} ${luxuriousScript.variable} ${playfair.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SmoothScroll />
+        <CursorOrb />
+        {children}
+      </body>
     </html>
   );
 }
