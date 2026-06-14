@@ -28,3 +28,18 @@ body {
 * {
   cursor: none;
 }
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* IE & old Edge */
+body {
+  -ms-overflow-style: none;
+}

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Playwrite_GB_S, Luxurious_Script, Great_Vibes, Playf
 import "./globals.css";
 import SmoothScroll from "@/app/components/animation/SmoothScroll";
 import CursorOrb from "@/app/components/animation/CursorOrb";
+import ClientWrapper from "@/app/components/ClientWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,9 +54,10 @@ export default function RootLayout({
       className={`${openSans.variable} ${geistSans.variable} ${geistMono.variable} ${playwrite.variable} ${luxuriousScript.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SmoothScroll />
         <CursorOrb />
-        {children}
+        <ClientWrapper>
+          {children}
+        </ClientWrapper>
       </body>
     </html>
   );

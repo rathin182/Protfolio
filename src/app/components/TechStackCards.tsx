@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const techStack = [
   {
@@ -32,6 +33,19 @@ const techStack = [
 ];
 
 export default function TechStackCards() {
+  const [offset, setOffset] = useState({ x: 0, y: 0, });
+
+  const handleMouseEnter = () => {
+    const randomX = (Math.random() - 0.5) * 40;
+    const randomY = (Math.random() - 0.5) * 40;
+    console.log("calledd");
+
+    setOffset((prev) => ({
+      x: prev.x + randomX,
+      y: prev.y + randomY,
+    }));
+  };
+
   return (
     <div className="absolute -right-20 top-70 -translate-y-1/2 flex flex-col gap-4 z-50">
       {techStack.map((item, i) => (
@@ -40,13 +54,15 @@ export default function TechStackCards() {
           drag
           dragMomentum={false}
           dragElastic={0.18}
+          onMouseEnter={handleMouseEnter}
           initial={{
             opacity: 0,
             x: 50,
           }}
           animate={{
             opacity: 1,
-            x: 0,
+            x: offset.x,
+            y: offset.y,
           }}
           transition={{
             delay: i * 0.15,

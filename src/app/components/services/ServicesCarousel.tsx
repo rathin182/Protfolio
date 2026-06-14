@@ -8,34 +8,40 @@ import ServiceModal from "./ServiceModal";
 
 const services = [
     {
-        title: "Full Stack Development",
-        description: "End-to-end web application development.",
+        title: "Custom Web Applications",
+        description:
+            "Build fast, scalable web applications tailored to your business needs.",
         icon: Code2,
     },
     {
-        title: "Authentication & Authorization",
-        description: "Secure auth systems and permissions.",
-        icon: ShieldCheck,
+        title: "SaaS Product Development",
+        description:
+            "Turn your idea into a complete SaaS platform with modern technologies.",
+        icon: LayoutDashboard,
     },
     {
-        title: "Deployment & DevOps",
-        description: "Docker, CI/CD, Nginx and cloud deployment.",
+        title: "API Development & Integration",
+        description:
+            "Create secure APIs and connect third-party services into your applications.",
         icon: CloudCog,
     },
     {
-        title: "Performance Optimization",
-        description: "Frontend, backend and database optimization.",
+        title: "Admin Dashboards",
+        description:
+            "Build powerful dashboards to manage users, data, analytics, and operations.",
         icon: Gauge,
     },
     {
-        title: "Bug Fixing & Maintenance",
-        description: "Fix bugs and maintain production systems.",
-        icon: Bug,
+        title: "Database Management",
+        description:
+            "Design reliable databases and optimize performance for growing applications.",
+        icon: ShieldCheck,
     },
     {
-        title: "Custom Admin Dashboards",
-        description: "Powerful dashboards tailored to your business.",
-        icon: LayoutDashboard,
+        title: "Maintenance & Support",
+        description:
+            "Fix issues, improve existing systems, and provide long-term technical support.",
+        icon: Bug,
     },
 ];
 
@@ -74,14 +80,16 @@ export default function ServicesCarousel() {
     }, []);
 
     return (
-        <section className="relative w-full overflow-hidden py-24">
-            <div className="mb-14 px-10">
-                <p className="text-sm font-semibold tracking-[0.3em] uppercase text-white/60">
+        <section className="relative w-full overflow-hidden py-20">
+            {/* <div className="group mb-14 px-10 inline-block py-4">
+                <p className="text-sm font-semibold tracking-[0.3em] uppercase text-white/60 hover:scale-105">
                     Services
                 </p>
 
-                <div className="mt-3 h-[3px] w-16 bg-[#52ca56]" />
-            </div>
+                <div className="mt-3 h-[3px] overflow-hidden">
+                    <div className=" h-full w-16 bg-[#52ca56] origin-left transition-transform duration-500 ease-out group-hover:scale-x-300 "  />
+                </div>
+            </div> */}
 
             <motion.div
                 drag="x"
@@ -125,16 +133,7 @@ export default function ServicesCarousel() {
                                     className=" group relative min-w-[420px] max-w-[420px] rounded-3xl border border-[#52ca56]/15 bg-[#071018] p-8 overflow-hidden ">
                                     {/* Glow */}
                                     <div
-                                        className="
-                    absolute
-                    inset-0
-                    opacity-0
-                    group-hover:opacity-100
-                    transition-opacity
-                    duration-500
-                    bg-[radial-gradient(circle_at_center,#52ca5620,transparent_70%)]
-                  "
-                                    />
+                                        className=" absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,#52ca5620,transparent_70%)] " />
 
                                     {/* Border Beam */}
                                     <motion.div
@@ -146,7 +145,7 @@ export default function ServicesCarousel() {
                                             repeat: Infinity,
                                             ease: "linear",
                                         }}
-                                        className=" absolute left-0 top-1/2 h-[350%] w-28 -translate-y-1/2 rotate-12 bg-gradient-to-r from-transparent via-[#52ca56]/25 to-transparent blur-sm" />
+                                    />
 
                                     {/* Icon */}
                                     <motion.div
