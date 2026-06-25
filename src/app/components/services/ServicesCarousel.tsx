@@ -80,119 +80,145 @@ export default function ServicesCarousel() {
     }, []);
 
     return (
-        <section className="relative w-full overflow-hidden py-20">
-            {/* <div className="group mb-14 px-10 inline-block py-4">
-                <p className="text-sm font-semibold tracking-[0.3em] uppercase text-white/60 hover:scale-105">
-                    Services
-                </p>
+       <section className="relative py-24 px-8">
+  <div className="max-w-[1600px] mx-auto">
+    <div className="grid grid-cols-6 gap-6 items-start">
+      {services.map((service, index) => {
+        const Icon = service.icon;
 
-                <div className="mt-3 h-[3px] overflow-hidden">
-                    <div className=" h-full w-16 bg-[#52ca56] origin-left transition-transform duration-500 ease-out group-hover:scale-x-300 "  />
-                </div>
-            </div> */}
-
+        return (
+          <CrackedCard
+            key={service.title}
+            onExplode={() => {
+              setTimeout(() => {
+                setSelectedService(service);
+                setModalOpen(true);
+              }, 2500);
+            }}
+          >
             <motion.div
-                drag="x"
-                dragElastic={0.08}
-                dragMomentum
-                style={{ x }}
-                onDragStart={() =>
-                    controlsRef.current?.stop()
-                }
-                onDragEnd={() => {
-                    startAutoScroll();
-                }}
-                className=" flex gap-8 px-10 cursor-grab active:cursor-grabbing w-max "
+              whileHover={{
+                y: -8,
+                scale: 1.03,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+              }}
+              className="
+                relative
+                flex
+                flex-col
+                items-center
+                text-center
+                group
+                cursor-pointer
+              "
             >
-                {duplicated.map(
-                    (service, index) => {
-                        const Icon = service.icon;
+              {/* Connector */}
+              {index !== services.length - 1 && (
+                <div
+                  className="
+                    absolute
+                    top-[58px]
+                    -right-6
+                    flex
+                    items-center
+                    gap-2
+                  "
+                >
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#52ca56]" />
+                  {/* <div className="w-10 h-[1px] bg-[#52ca56]/30" /> */}
+                </div>
+              )}
 
-                        return (
-                            <CrackedCard
-                                key={`${service.title}-${index}`}
-                                onExplode={() => {
-                                    stopAutoScroll();
-
-                                    setTimeout(() => {
-                                        setSelectedService(service);
-                                        setModalOpen(true);
-                                    }, 2500);
-                                }}
-                            >
-                                <motion.div
-
-                                    whileHover={{
-                                        scale: 1.03,
-                                        y: -10,
-                                    }}
-                                    transition={{
-                                        type: "spring",
-                                        stiffness: 250,
-                                    }}
-                                    className=" group relative min-w-[420px] max-w-[420px] rounded-3xl border border-[#52ca56]/15 bg-[#071018] p-8 overflow-hidden ">
-                                    {/* Glow */}
-                                    <div
-                                        className=" absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_center,#52ca5620,transparent_70%)] " />
-
-                                    {/* Border Beam */}
-                                    <motion.div
-                                        animate={{
-                                            x: ["-150%", "250%", "-150%"],
-                                        }}
-                                        transition={{
-                                            duration: 8,
-                                            repeat: Infinity,
-                                            ease: "linear",
-                                        }}
-                                    />
-
-                                    {/* Icon */}
-                                    <motion.div
-                                        animate={{
-                                            y: [
-                                                0,
-                                                -5,
-                                                0,
-                                            ],
-                                        }}
-                                        transition={{
-                                            duration: 3,
-                                            repeat: Infinity,
-                                        }}
-                                        className=" mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#52ca56]/20 bg-[#52ca56]/5 ">
-                                        <Icon
-                                            size={30}
-                                            className="text-[#52ca56]"
-                                        />
-                                    </motion.div>
-
-                                    <h3 className="mb-4 text-2xl font-semibold text-white">
-                                        {service.title}
-                                    </h3>
-
-                                    <p className="leading-8 text-white/60">
-                                        {service.description}
-                                    </p>
-
-                                    <div
-                                        className=" absolute bottom-0 left-0 h-[2px] w-0 bg-[#52ca56] transition-all duration-500 group-hover:w-full " />
-                                </motion.div>
-                            </CrackedCard>
-                        );
-                    }
-                )}
-            </motion.div>
-            <ServiceModal
-                open={modalOpen}
-                service={selectedService}
-                onClose={() => {
-                    setModalOpen(false);
-                    setSelectedService(null);
-
-                    startAutoScroll();
+              {/* Hexagon */}
+              <motion.div
+                animate={{
+                  y: [0, -6, 0],
                 }}
-            />
-        </section>
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                }}
+                style={{
+                  clipPath:
+                    "polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%)",
+                }}
+                className="
+                  relative
+                  w-32
+                  h-32
+                  flex
+                  items-center
+                  justify-center
+                  border
+                  border-[#52ca56]/60
+                  mb-5
+                  transition-all
+                  duration-500
+                  group-hover:border-[#52ca56]
+                  group-hover:shadow-[0_0_40px_rgba(82,202,86,0.25)]
+                "
+              >
+                {/* glow */}
+                <div
+                  className="
+                    absolute
+                    inset-0
+                    opacity-0
+                    group-hover:opacity-100
+                    transition-all
+                    duration-500
+                    bg-[radial-gradient(circle,#52ca5625,transparent_70%)]
+                  "
+                />
+
+                <Icon
+                  size={52}
+                  className="text-[#52ca56] relative z-10"
+                />
+              </motion.div>
+
+              {/* Title */}
+              <h3
+                className="
+                  text-white
+                  font-semibold
+                  text-lg
+                  leading-tight
+                  mb-3
+                "
+              >
+                {service.title}
+              </h3>
+
+              {/* Description */}
+              <p
+                className="
+                  text-white/50
+                  text-sm
+                  leading-6
+                  max-w-[220px]
+                "
+              >
+                {service.description}
+              </p>
+            </motion.div>
+          </CrackedCard>
+        );
+      })}
+    </div>
+  </div>
+
+  <ServiceModal
+    open={modalOpen}
+    service={selectedService}
+    onClose={() => {
+      setModalOpen(false);
+      setSelectedService(null);
+    }}
+  />
+</section>
     );
 }

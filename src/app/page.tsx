@@ -6,11 +6,13 @@ import TexhStack from "@/app/(pages)/techStack/page";
 import HeroBackground from '@/app/components/animation/HeroBackground';
 import Loader from "./components/Loader";
 import { useEffect, useState } from "react";
+import ProjectSection from "./(pages)/Projects/ProjectSection";
 
 export default function Home() {
   return (
     <div className="bg-[#02070b] relative overflow-hidden w-full">
       <Hero />
+      <ProjectSection />
       {/* <TexhStack /> */}
       <div className="relative z-[20]">
         <Services />
