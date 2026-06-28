@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect } from 'react'
 import { ArrowDownFromLine, ArrowDownToLine, ArrowRight, MoveRight, Send } from 'lucide-react';
+
 import Image from 'next/image';
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,12 +11,31 @@ import HeroParticles from '@/app/components/animation/HeroParticles';
 import HeroBackground from '@/app/components/animation/HeroBackground';
 import TechStackCards from '@/app/components/TechStackCards';
 import TexhStack from "@/app/(pages)/techStack/page";
+import Link from 'next/link';
 
 const middleText = "Web Applications";
 
+const navItems = [
+    {
+        label: "Home",
+        href: "home",
+    },
+    {
+        label: "About",
+        href: "about",
+    },
+    {
+        label: "Projects",
+        href: "projects",
+    },
+    {
+        label: "Services",
+        href: "services",
+    }
+];
 
 const Hero = () => {
-    const navItems = ["Home", "About", "Projects", "Services", "Skills"];
+
     const [active, setActive] = useState("Home");
     const [typedText, setTypedText] = useState("");
     const [topVisible, setTopVisible] = useState(true);
@@ -24,16 +44,54 @@ const Hero = () => {
     const [scrolled, setScrolled] = useState(false);
 
     // update active when URL changes
+    // useEffect(() => {
+    //     const handleHashChange = () => {
+    //         const hash = window.location.hash.replace("#", "");
+    //         if (hash) setActive(hash);
+    //     };
+
+    //     handleHashChange();
+    //     window.addEventListener("hashchange", handleHashChange);
+
+    //     return () => window.removeEventListener("hashchange", handleHashChange);
+    // }, []);
+
+    const handleDownload = () => {
+        const link = document.createElement("a");
+        link.href = "/Rathin_Bagchi_Resume.pdf";
+        link.download = "Rathin_Bagchi_Resume.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     useEffect(() => {
-        const handleHashChange = () => {
-            const hash = window.location.hash.replace("#", "");
-            if (hash) setActive(hash);
-        };
+        const sections = navItems
+            .map((item) => document.getElementById(item.href))
+            .filter(Boolean);
 
-        handleHashChange();
-        window.addEventListener("hashchange", handleHashChange);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const section = navItems.find(
+                            (item) => item.href === entry.target.id
+                        );
 
-        return () => window.removeEventListener("hashchange", handleHashChange);
+                        if (section) {
+                            setActive(section.label);
+                        }
+                    }
+                });
+            },
+            {
+                threshold: 0.55,
+            }
+        );
+
+        sections.forEach((section) => observer.observe(section!));
+
+        return () => observer.disconnect();
     }, []);
 
 
@@ -54,6 +112,12 @@ const Hero = () => {
         window.location.hash = item; // 👈 updates URL like #Home
     };
 
+    const scrollToProjects = (id: string) => {
+        document.getElementById(id)?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    };
     useEffect(() => {
         let timeout: NodeJS.Timeout;
 
@@ -116,27 +180,30 @@ const Hero = () => {
                         <Image src="/logonobg2.png" alt="Vercel Logo" width={40} height={24} />
                     </div>
                     <nav>
-                        <ul className="flex gap-8 relative">
+                        <ul className="relative flex gap-8">
                             {navItems.map((item) => (
                                 <li
-                                    key={item}
-                                    onClick={() => handleClick(item)}
+                                    key={item.href}
+                                    onClick={() => handleClick(item.label)}
                                     style={{
                                         fontFamily: "var(--font-playfair)",
                                     }}
-                                    className={`relative cursor-pointer text-md  transition-all duration-300 ${active === item ? "text-[#52ca56]" : "text-white"
+                                    className={`relative cursor-pointer text-md transition-all duration-300 ${active === item.label
+                                        ? "text-[#52ca56]"
+                                        : "text-white hover:text-[#52ca56]"
                                         }`}
                                 >
-                                    {/* Link behavior */}
-                                    <a href={`#${item}`} className="relative font-medium">
-                                        {item}
+                                    <button
+                                        onClick={() => scrollToProjects(item.href)}
+                                        className="relative block font-medium"
+                                    >
+                                        {item.label}
 
-                                        {/* underline */}
                                         <span
-                                            className={`absolute left-0 -bottom-1 h-[2px] bg-[#52ca56] transition-all duration-300 ${active === item ? "w-full" : "w-0"
+                                            className={`absolute left-0 -bottom-1 h-[2px] bg-[#52ca56] transition-all duration-300 ${active === item.label ? "w-full" : "w-0"
                                                 }`}
                                         />
-                                    </a>
+                                    </button>
                                 </li>
                             ))}
                         </ul>
@@ -162,8 +229,8 @@ const Hero = () => {
                                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                                     <Send size={16} />
                                 </span>
-                                <span className="tracking-wide group-hover:tracking-wider transition-all duration-300">
-                                    Lets Connect
+                                <span onClick={() => scrollToProjects("contact")} className="tracking-wide group-hover:tracking-wider transition-all duration-300">
+                                    <button>Lets Connect</button>
                                 </span>
                             </div>
 
@@ -174,6 +241,7 @@ const Hero = () => {
 
                 {/* main Section */}
                 <main
+                    id='home'
                     style={{
                         fontFamily: "var(--font-open-sans)",
                     }}
@@ -190,7 +258,7 @@ const Hero = () => {
                         {/* buttons */}
                         <div className="flex mt-4 gap-4">
                             {/* View My Work */}
-                            <button className="cursor-pointer group relative overflow-hidden rounded-xl bg-[#52ca56] px-8 py-3 font-semibold text-black transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-[0_0_40px_rgba(82,202,86,0.6)]">
+                            <button onClick={() => scrollToProjects("projects")} className="cursor-pointer group relative overflow-hidden rounded-xl bg-[#52ca56] px-8 py-3 font-semibold text-black transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-[0_0_40px_rgba(82,202,86,0.6)]">
 
                                 {/* Shine */}
                                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-[1400ms] group-hover:translate-x-full"></span>
@@ -204,7 +272,9 @@ const Hero = () => {
                             </button>
 
                             {/* Contact Me */}
-                            <button className="cursor-pointer group relative overflow-hidden rounded-xl border border-[#52ca56]/40 bg-black px-8 py-3 font-semibold text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:border-[#52ca56] hover:shadow-[0_0_30px_rgba(82,202,86,0.35)]">
+                            <button
+                                onClick={handleDownload}
+                                className="cursor-pointer group relative overflow-hidden rounded-xl border border-[#52ca56]/40 bg-black px-8 py-3 font-semibold text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:border-[#52ca56] hover:shadow-[0_0_30px_rgba(82,202,86,0.35)]">
 
                                 {/* Main Wave */}
                                 <span className="absolute -left-[150%] top-0 h-full w-[140%] bg-[#52ca56]/20 rounded-r-[100px] transition-all duration-700 ease-out group-hover:left-0"></span>

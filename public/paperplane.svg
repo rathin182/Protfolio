@@ -1,0 +1,128 @@
+<svg width="1240" height="1240" viewBox="0 0 1240 1240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="26" result="blur1" />
+      <feMerge>
+        <feMergeNode in="blur1" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="softGlowSmall" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <linearGradient id="topFace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7CFFB2" />
+      <stop offset="55%" stop-color="#2FE878" />
+      <stop offset="100%" stop-color="#16C25E" />
+    </linearGradient>
+
+    <linearGradient id="rightFace" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3CFF8A" />
+      <stop offset="100%" stop-color="#0FAE52" />
+    </linearGradient>
+
+    <linearGradient id="frontFold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B7A3C" />
+      <stop offset="100%" stop-color="#054E26" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="1240" height="1240" fill="#030604" />
+
+  <!-- ===================== Diamond Sparkles ===================== -->
+  <g filter="url(#softGlowSmall)">
+    <rect
+      x="248" y="120" width="56" height="56"
+      transform="rotate(45 276 148)"
+      fill="none" stroke="#3CFF73" stroke-width="5"
+    />
+    <rect
+      x="118" y="1010" width="56" height="56"
+      transform="rotate(45 146 1038)"
+      fill="none" stroke="#3CFF73" stroke-width="5"
+    />
+  </g>
+
+  <!-- ===================== Paper Plane ===================== -->
+  <g filter="url(#glow)">
+    <!-- Right / top face - the large lit triangular wing reaching to the nose tip -->
+    <path
+      d="M 165 545
+         L 1055 235
+         L 780 845
+         L 565 660
+         Z"
+      fill="url(#topFace)"
+    />
+
+    <!-- Left wing - the narrower face folding down-left toward the tail point -->
+    <path
+      d="M 165 545
+         L 460 880
+         L 565 660
+         Z"
+      fill="url(#rightFace)"
+    />
+
+    <!-- Front fold / keel - the dark shadowed underside wedge between the two wings -->
+    <path
+      d="M 460 880
+         L 565 660
+         L 165 545
+         Z"
+      fill="url(#frontFold)"
+      opacity="0"
+    />
+
+    <!-- Center keel fold (visible dark sliver running from nose down to tail) -->
+    <path
+      d="M 1055 235
+         L 565 660
+         L 460 880
+         L 645 670
+         Z"
+      fill="url(#frontFold)"
+    />
+
+    <!-- Crisp edge highlights -->
+    <path
+      d="M 165 545 L 1055 235"
+      stroke="#CFFFE3"
+      stroke-width="5"
+      stroke-linecap="round"
+      opacity="0.65"
+      fill="none"
+    />
+    <path
+      d="M 165 545 L 460 880"
+      stroke="#CFFFE3"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.35"
+      fill="none"
+    />
+    <path
+      d="M 1055 235 L 780 845"
+      stroke="#CFFFE3"
+      stroke-width="3"
+      stroke-linecap="round"
+      opacity="0.3"
+      fill="none"
+    />
+    <path
+      d="M 565 660 L 460 880"
+      stroke="#03301A"
+      stroke-width="4"
+      stroke-linecap="round"
+      opacity="0.85"
+      fill="none"
+    />
+  </g>
+</svg>

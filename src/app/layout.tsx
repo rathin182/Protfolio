@@ -4,6 +4,7 @@ import "./globals.css";
 import SmoothScroll from "@/app/components/animation/SmoothScroll";
 import CursorOrb from "@/app/components/animation/CursorOrb";
 import ClientWrapper from "@/app/components/ClientWrapper";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,15 +51,17 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
-      className={`${openSans.variable} ${geistSans.variable} ${geistMono.variable} ${playwrite.variable} ${luxuriousScript.variable} ${playfair.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <CursorOrb />
-        <ClientWrapper>
-          {children}
-        </ClientWrapper>
-      </body>
-    </html>
+  lang="en"
+  className={`${openSans.variable} ${geistSans.variable} ${geistMono.variable} ${playwrite.variable} ${luxuriousScript.variable} ${playfair.variable} h-full antialiased`}
+>
+  <body
+    suppressHydrationWarning
+    className="min-h-full flex flex-col"
+  >
+    <CursorOrb />
+    <ClientWrapper>{children}</ClientWrapper>
+    <Toaster richColors position="top-right" />
+  </body>
+</html>
   );
 }
