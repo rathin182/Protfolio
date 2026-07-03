@@ -80,11 +80,13 @@ export default function ServicesCarousel() {
     }, []);
 
     return (
-       <section className="relative py-24 px-8">
+       <section className="relative py-14 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 md:px-8">
   <div className="max-w-[1600px] mx-auto">
-    <div className="grid grid-cols-6 gap-6 items-start">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-x-6 gap-y-14 sm:gap-x-8 sm:gap-y-16 lg:gap-6 items-start">
       {services.map((service, index) => {
         const Icon = service.icon;
+        const isLastInRow =
+          (index + 1) % 6 === 0 || index === services.length - 1;
 
         return (
           <CrackedCard
@@ -115,14 +117,15 @@ export default function ServicesCarousel() {
                 cursor-pointer
               "
             >
-              {/* Connector */}
-              {index !== services.length - 1 && (
+              {/* Connector - only shown on the xl 6-col row layout */}
+              {!isLastInRow && (
                 <div
                   className="
+                    hidden
+                    xl:flex
                     absolute
                     top-[58px]
                     -right-6
-                    flex
                     items-center
                     gap-2
                   "
@@ -147,14 +150,19 @@ export default function ServicesCarousel() {
                 }}
                 className="
                   relative
-                  w-32
-                  h-32
+                  w-24
+                  h-24
+                  sm:w-28
+                  sm:h-28
+                  md:w-32
+                  md:h-32
                   flex
                   items-center
                   justify-center
                   border
                   border-[#52ca56]/60
-                  mb-5
+                  mb-4
+                  sm:mb-5
                   transition-all
                   duration-500
                   group-hover:border-[#52ca56]
@@ -175,8 +183,8 @@ export default function ServicesCarousel() {
                 />
 
                 <Icon
-                  size={52}
-                  className="text-[#52ca56] relative z-10"
+                  size={40}
+                  className="text-[#52ca56] relative z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-[52px] md:h-[52px]"
                 />
               </motion.div>
 
@@ -185,9 +193,12 @@ export default function ServicesCarousel() {
                 className="
                   text-white
                   font-semibold
-                  text-lg
+                  text-base
+                  sm:text-lg
                   leading-tight
-                  mb-3
+                  mb-2
+                  sm:mb-3
+                  px-2
                 "
               >
                 {service.title}
@@ -197,9 +208,11 @@ export default function ServicesCarousel() {
               <p
                 className="
                   text-white/50
-                  text-sm
+                  text-xs
+                  sm:text-sm
                   leading-6
                   max-w-[220px]
+                  mx-auto
                 "
               >
                 {service.description}

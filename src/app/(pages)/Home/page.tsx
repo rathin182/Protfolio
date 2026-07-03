@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from 'react'
-import { ArrowDownFromLine, ArrowDownToLine, ArrowRight, MoveRight, Send } from 'lucide-react';
+import { ArrowDownFromLine, ArrowDownToLine, ArrowRight, MoveRight, Send, Menu, X } from 'lucide-react';
 
 import Image from 'next/image';
 import { useState } from "react";
@@ -42,6 +42,7 @@ const Hero = () => {
     const [bottomVisible, setBottomVisible] = useState(true);
     const [phase, setPhase] = useState("typing");
     const [scrolled, setScrolled] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     // update active when URL changes
     // useEffect(() => {
@@ -107,6 +108,18 @@ const Hero = () => {
         };
     }, []);
 
+    // lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (mobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [mobileMenuOpen]);
+
     const handleClick = (item: any) => {
         setActive(item);
         window.location.hash = item; // 👈 updates URL like #Home
@@ -117,6 +130,7 @@ const Hero = () => {
             behavior: "smooth",
             block: "start",
         });
+        setMobileMenuOpen(false);
     };
     useEffect(() => {
         let timeout: NodeJS.Timeout;
@@ -157,11 +171,11 @@ const Hero = () => {
     }, [typedText, phase]);
 
     return (
-        <div className='bg-[#02070b] relative overflow-hidden h-screen w-full'>
+        <div className='bg-[#02070b] relative overflow-hidden min-h-screen w-full'>
             <HeroBackground />
             <div className='h-full'>
                 {/* Navigation */}
-                <header className={` fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-6 transition-all duration-500
+                <header className={`fixed top-0 left-0 right-0 z-[1000] flex items-center justify-between px-4 sm:px-6 md:px-10 lg:px-16 xl:px-20 py-2 transition-all duration-500
         ${scrolled
                         ? `
                 bg-white/[0.03]
@@ -176,11 +190,19 @@ const Hero = () => {
               `
                     }
     `}>
-                    <div className='px-20 py-3'>
-                        <Image src="/logonobg2.png" alt="Vercel Logo" width={40} height={24} />
+                    <div className='py-2 sm:py-3 shrink-0'>
+                        <Image
+                            src="/logonobg2.png"
+                            alt="Vercel Logo"
+                            width={40}
+                            height={24}
+                            className="w-8 h-auto sm:w-9 md:w-10"
+                        />
                     </div>
-                    <nav>
-                        <ul className="relative flex gap-8">
+
+                    {/* Desktop Nav */}
+                    <nav className="hidden md:block">
+                        <ul className="relative flex gap-4 lg:gap-8">
                             {navItems.map((item) => (
                                 <li
                                     key={item.href}
@@ -188,7 +210,7 @@ const Hero = () => {
                                     style={{
                                         fontFamily: "var(--font-playfair)",
                                     }}
-                                    className={`relative cursor-pointer text-md transition-all duration-300 ${active === item.label
+                                    className={`relative cursor-pointer text-sm lg:text-md transition-all duration-300 ${active === item.label
                                         ? "text-[#52ca56]"
                                         : "text-white hover:text-[#52ca56]"
                                         }`}
@@ -208,8 +230,13 @@ const Hero = () => {
                             ))}
                         </ul>
                     </nav>
-                    <div>
-                        <button className="cursor-pointer group relative overflow-hidden rounded-xl border border-[#52ca56]/30 bg-black px-8 py-3 font-semibold text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:border-[#52ca56] hover:shadow-[0_0_40px_rgba(82,202,86,0.25)]">
+
+                    {/* Desktop CTA */}
+                    <div className="hidden md:block shrink-0">
+                        <button
+                            onClick={() => scrollToProjects("contact")}
+                            className="cursor-pointer group relative overflow-hidden rounded-xl border border-[#52ca56]/30 bg-black px-4 lg:px-8 py-2 lg:py-3 font-semibold text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:border-[#52ca56] hover:shadow-[0_0_40px_rgba(82,202,86,0.25)]"
+                        >
 
                             {/* 🌟 Radial Glow Burst */}
                             <span className="absolute inset-0 scale-0 opacity-0 rounded-full bg-[#52ca56]/20 blur-2xl transition-all duration-700 group-hover:scale-150 group-hover:opacity-100"></span>
@@ -229,14 +256,60 @@ const Hero = () => {
                                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                                     <Send size={16} />
                                 </span>
-                                <span onClick={() => scrollToProjects("contact")} className="tracking-wide group-hover:tracking-wider transition-all duration-300">
-                                    <button>Lets Connect</button>
+                                <span className="tracking-wide group-hover:tracking-wider transition-all duration-300 text-sm lg:text-base">
+                                    Lets Connect
                                 </span>
                             </div>
 
                         </button>
                     </div>
+
+                    {/* Mobile Menu Button */}
+                    <button
+                        className="md:hidden text-white p-2 z-[1100]"
+                        onClick={() => setMobileMenuOpen((prev) => !prev)}
+                        aria-label="Toggle menu"
+                    >
+                        {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+                    </button>
                 </header>
+
+                {/* Mobile Menu Overlay */}
+                <AnimatePresence>
+                    {mobileMenuOpen && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="fixed inset-0 z-[1050] bg-[#02070b]/98 backdrop-blur-lg flex flex-col items-center justify-center gap-8 md:hidden"
+                        >
+                            <ul className="flex flex-col items-center gap-6">
+                                {navItems.map((item) => (
+                                    <li
+                                        key={item.href}
+                                        style={{ fontFamily: "var(--font-playfair)" }}
+                                        className={`text-2xl font-medium transition-all duration-300 ${active === item.label ? "text-[#52ca56]" : "text-white"
+                                            }`}
+                                    >
+                                        <button onClick={() => { handleClick(item.label); scrollToProjects(item.href); }}>
+                                            {item.label}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            <button
+                                onClick={() => scrollToProjects("contact")}
+                                className="mt-4 flex items-center gap-2 rounded-xl border border-[#52ca56]/30 bg-black px-8 py-3 font-semibold text-white"
+                                style={{ fontFamily: "var(--font-playfair)" }}
+                            >
+                                <Send size={16} />
+                                <span>Lets Connect</span>
+                            </button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
 
                 {/* main Section */}
@@ -245,8 +318,8 @@ const Hero = () => {
                     style={{
                         fontFamily: "var(--font-open-sans)",
                     }}
-                    className='px-10 flex items-center justify-between h-[84%]  mt-10'>
-                    <div className='flex flex-col gap-4'>
+                    className='px-4 sm:px-6 md:px-10 lg:px-14 xl:px-10 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-10 lg:gap-4 min-h-screen pt-28 pb-16 lg:pt-0 lg:pb-0 lg:h-[84%] lg:mt-10 text-center lg:text-left'>
+                    <div className='flex flex-col gap-4 items-center lg:items-start order-2 lg:order-1'>
                         {/* Main Heading */}
                         <HeroText />
                         {/* Sub Heading */}
@@ -256,9 +329,9 @@ const Hero = () => {
                         <span className='text-xl'>production ready deployment.</span>
                     </div> */}
                         {/* buttons */}
-                        <div className="flex mt-4 gap-4">
+                        <div className="flex flex-wrap justify-center lg:justify-start mt-4 gap-4">
                             {/* View My Work */}
-                            <button onClick={() => scrollToProjects("projects")} className="cursor-pointer group relative overflow-hidden rounded-xl bg-[#52ca56] px-8 py-3 font-semibold text-black transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-[0_0_40px_rgba(82,202,86,0.6)]">
+                            <button onClick={() => scrollToProjects("projects")} className="cursor-pointer group relative overflow-hidden rounded-xl bg-[#52ca56] px-6 sm:px-8 py-2.5 sm:py-3 font-semibold text-black text-sm sm:text-base transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-[0_0_40px_rgba(82,202,86,0.6)]">
 
                                 {/* Shine */}
                                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-[1400ms] group-hover:translate-x-full"></span>
@@ -266,7 +339,7 @@ const Hero = () => {
                                 <span className="relative flex items-center gap-2">
                                     View My Work
                                     <span className="transition-transform duration-500 group-hover:translate-x-1">
-                                        <ArrowRight />
+                                        <ArrowRight size={18} />
                                     </span>
                                 </span>
                             </button>
@@ -274,7 +347,7 @@ const Hero = () => {
                             {/* Contact Me */}
                             <button
                                 onClick={handleDownload}
-                                className="cursor-pointer group relative overflow-hidden rounded-xl border border-[#52ca56]/40 bg-black px-8 py-3 font-semibold text-white transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:border-[#52ca56] hover:shadow-[0_0_30px_rgba(82,202,86,0.35)]">
+                                className="cursor-pointer group relative overflow-hidden rounded-xl border border-[#52ca56]/40 bg-black px-6 sm:px-8 py-2.5 sm:py-3 font-semibold text-white text-sm sm:text-base transition-all duration-500 hover:-translate-y-1 hover:scale-105 hover:border-[#52ca56] hover:shadow-[0_0_30px_rgba(82,202,86,0.35)]">
 
                                 {/* Main Wave */}
                                 <span className="absolute -left-[150%] top-0 h-full w-[140%] bg-[#52ca56]/20 rounded-r-[100px] transition-all duration-700 ease-out group-hover:left-0"></span>
@@ -296,13 +369,13 @@ const Hero = () => {
 
                         </div>
                     </div>
-                    <div className="relative flex items-center justify-center mr-90">
+                    <div className="relative flex items-center justify-center order-1 lg:order-2 lg:mr-16 xl:mr-24 2xl:mr-32 mt-4 lg:mt-0">
 
                         {/* CENTER HERO */}
                         <div className="relative z-10 flex items-center justify-center">
 
                             {/* Glow Layer */}
-                            <div className="absolute h-[320px] w-[320px] rounded-full bg-[#52ca56] opacity-25 blur-[110px]" />
+                            <div className="absolute h-[180px] w-[180px] sm:h-[240px] sm:w-[240px] md:h-[280px] md:w-[280px] lg:h-[320px] lg:w-[320px] rounded-full bg-[#52ca56] opacity-25 blur-[70px] sm:blur-[90px] lg:blur-[110px]" />
 
                             {/* Image */}
                             <Image
@@ -310,23 +383,26 @@ const Hero = () => {
                                 alt="hero"
                                 width={700}
                                 height={700}
-                                className="relative z-10 -mb-45"
+                                className="relative z-10 w-[220px] sm:w-[300px] md:w-[380px] lg:w-[480px] xl:w-[560px] 2xl:w-[700px] h-auto -mb-10 sm:-mb-16 md:-mb-24 lg:-mb-32 xl:-mb-45"
+                                priority
                             />
                         </div>
 
                         {/* RIGHT LOGOS (FORCED ABOVE EVERYTHING) */}
-                        <TechStackCards />
+                        <div className="hidden md:block">
+                            <TechStackCards />
+                        </div>
                     </div>
                     {/* Socials */}
-                    <div className='fixed right-4 bottom-35 z-50 flex flex-col gap-5 items-center text-xl'>
+                    <div className='fixed right-2 sm:right-4 bottom-24 sm:bottom-28 lg:bottom-35 z-50 flex flex-col gap-3 sm:gap-5 items-center text-xl'>
                         {/* <span>Connsect With Me</span> */}
-                        <div className='flex flex-col gap-4'>
+                        <div className='flex flex-col gap-3 sm:gap-4'>
                             <a href="https://github.com/rathin182" target='_blank'>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="w-[25px] h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300"
+                                    className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300"
                                 >
                                     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.04c-3.34.72-4.04-1.42-4.04-1.42-.54-1.38-1.34-1.74-1.34-1.74-1.1-.74.08-.72.08-.72 1.2.08 1.84 1.24 1.84 1.24 1.08 1.84 2.82 1.3 3.5.98.1-.78.42-1.3.76-1.6-2.66-.3-5.46-1.34-5.46-5.94 0-1.32.48-2.4 1.24-3.24-.12-.3-.54-1.52.12-3.16 0 0 1.02-.32 3.34 1.24a11.5 11.5 0 0 1 6.08 0c2.32-1.56 3.34-1.24 3.34-1.24.66 1.64.24 2.86.12 3.16.78.84 1.24 1.92 1.24 3.24 0 4.62-2.82 5.62-5.5 5.92.44.38.82 1.12.82 2.28v3.38c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z" />
                                 </svg>
@@ -336,7 +412,7 @@ const Hero = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="w-[25px] h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300 "
+                                    className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300 "
                                 >
                                     <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.847h-7.406l-5.8-7.584-6.64 7.584H.47l8.6-9.83L0 1.153h7.594l5.243 6.932L18.901 1.153zm-1.29 19.494h2.04L6.486 3.24H4.298l13.313 17.407z" />
                                 </svg>
@@ -346,7 +422,7 @@ const Hero = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="w-[25px] h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300 "
+                                    className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300 "
                                 >
                                     <path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 3.25-8 5.5-8-5.5V6.5l8 5.5 8-5.5v.75z" />
                                 </svg>
@@ -356,7 +432,7 @@ const Hero = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="w-[25px] h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300"
+                                    className="w-[20px] h-[20px] sm:w-[25px] sm:h-[25px] cursor-pointer hover:text-[#4eca52] transition-all duration-300"
                                 >
                                     <path d="M7.75 2C4.57 2 2 4.57 2 7.75v8.5C2 19.43 4.57 22 7.75 22h8.5C19.43 22 22 19.43 22 16.25v-8.5C22 4.57 19.43 2 16.25 2h-8.5zm9.75 2a1.25 1.25 0 1 1 0 2.5A1.25 1.25 0 0 1 17.5 4zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
                                 </svg>

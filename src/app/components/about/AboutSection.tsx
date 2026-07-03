@@ -1,5 +1,4 @@
 "use client";
-
 import { Code2, Brain, Zap, Users } from "lucide-react";
 import SkillBar from "./SkillBar";
 import GlowButton from "./GlowButton";
@@ -16,27 +15,43 @@ const skills = [
 export default function AboutMe() {
   return (
     <div
-    id="about"
+      id="about"
       className="
         relative
         flex
-        h-screen
+        flex-col
+        lg:flex-row
+        min-h-screen
+        lg:h-screen
         w-full
         max-w-7xl
+        mx-auto
         overflow-hidden
         bg-[#02070B]
       "
     >
       <HeroBackground />
+
       {/* LEFT */}
-      <div className="relative z-10 flex w-1/2 flex-col justify-center px-14 py-12">
+      <div
+        className="
+          relative z-10 flex w-full lg:w-1/2
+          flex-col justify-center
+          px-6 py-14
+          sm:px-10 sm:py-16
+          md:px-14 md:py-12
+          items-center text-center
+          lg:items-start lg:text-left
+        "
+      >
         {/* Small Title */}
         <span
           className="
             text-xs
             font-bold
             uppercase
-            tracking-[0.35em]
+            tracking-[0.25em]
+            sm:tracking-[0.35em]
             text-[#3CFF73]
           "
         >
@@ -47,7 +62,8 @@ export default function AboutMe() {
         <h2
           className="
             mt-3
-            text-4xl
+            text-3xl
+            sm:text-4xl
             font-bold
             text-white
           "
@@ -60,8 +76,10 @@ export default function AboutMe() {
           className="
             mt-4
             max-w-md
-            text-[15px]
-            leading-7
+            text-sm
+            sm:text-[15px]
+            leading-6
+            sm:leading-7
             text-white/55
           "
         >
@@ -72,7 +90,7 @@ export default function AboutMe() {
         </p>
 
         {/* Skills */}
-        <div className="mt-8 space-y-5">
+        <div className="mt-8 w-full max-w-md space-y-5">
           {skills.map((skill) => (
             <SkillBar
               key={skill.title}
@@ -90,7 +108,15 @@ export default function AboutMe() {
       </div>
 
       {/* RIGHT */}
-      <div className="relative flex w-1/2 items-center justify-start overflow-hidden -ml-18">
+      <div
+        className="
+          relative flex w-full lg:w-1/2
+          items-center justify-center lg:justify-start
+          overflow-hidden
+          py-10 lg:py-0
+          lg:-ml-18
+        "
+      >
         {/* Animated Radar */}
         <RadarAnimation />
       </div>

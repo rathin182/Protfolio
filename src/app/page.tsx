@@ -17,17 +17,13 @@ export default function Home() {
       <Hero />
       <ProjectSection />
       {/* <TexhStack /> */}
-      <div className="relative z-[20]">
+      <div className="relative z-[1000]">
         <Services />
       </div>
-      <div className="flex items-center  justify-between px-3  bg-[#02070b]">
-      <div className="w-[50%]">
-        <AboutSection />
-      </div>
-      <div className="w-[60%]">
-        <ContactSection />
-      </div>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 py-6 bg-[#02070b]">
+  <AboutSection />
+  <ContactSection />
+</div>
       <div className="bg-amber-200">
         <Footer />
       </div>

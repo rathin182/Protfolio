@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import GlowButton from "@/app/components/about/GlowButton";
@@ -13,6 +13,11 @@ export default function ContactSection() {
   const [planeKey, setPlaneKey] = useState(0);
   const [signalActive, setSignalActive] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Track whether we're on a stacked (mobile/tablet) layout, where the
+  // rope path and flight animation should be simplified/disabled since
+  // the button and plane are no longer side by side.
+  const [isStacked, setIsStacked] = useState(false);
 
   // Real on-screen positions of the button and the plane, measured relative
   // to the card, so the rope path always connects them accurately.
@@ -35,12 +40,30 @@ export default function ContactSection() {
     });
   };
 
-  // Measure once layout has settled, and again on resize.
+  // Measure once layout has settled, and again on resize. Also track
+  // the lg breakpoint (1024px) to know when we've switched to the
+  // stacked mobile/tablet layout.
   useLayoutEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+
+    const handleBreakpoint = () => setIsStacked(!mql.matches);
+    handleBreakpoint();
+    mql.addEventListener("change", handleBreakpoint);
+
     measure();
     window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
+
+    return () => {
+      mql.removeEventListener("change", handleBreakpoint);
+      window.removeEventListener("resize", measure);
+    };
   }, []);
+
+  // Re-measure whenever the layout mode flips, once the DOM has settled.
+  useEffect(() => {
+    const id = requestAnimationFrame(measure);
+    return () => cancelAnimationFrame(id);
+  }, [isStacked]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -110,7 +133,7 @@ export default function ContactSection() {
 
       setIsSending(false);
       setSignalActive(false);
-    }finally{
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -128,6 +151,11 @@ export default function ContactSection() {
       ${points.x2} ${points.y2}
   `;
 
+  // On mobile/tablet (stacked layout) the button and plane can be far
+  // apart vertically, so the rope/flight animation is hidden — a simple
+  // "Sending..." state on the button is enough there.
+  const showRopeAndFlight = !isStacked;
+
   return (
     <div
       id="contact"
@@ -135,62 +163,79 @@ export default function ContactSection() {
       className="
         relative
         flex
+        flex-col
+        lg:flex-row
         w-full
         max-w-7xl
-        h-screen
+        mx-auto
+        min-h-screen
+        lg:h-screen
         overflow-hidden
         bg-[#02070B]
       "
     >
       <HeroBackground />
 
-      {/* ===== Rope path connecting the button to the plane ===== */}
-      <svg
-        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-        style={{ overflow: "visible" }}
-      >
-        {/* Resting dashed rope — always visible, faint */}
-        <path
-          d={pathD}
-          fill="none"
-          stroke="#3CFF73"
-          strokeOpacity={0.35}
-          strokeWidth={2}
-          strokeDasharray="8 8"
-          strokeLinecap="round"
-        />
+      {/* ===== Rope path connecting the button to the plane (desktop only) ===== */}
+      {showRopeAndFlight && (
+        <svg
+          className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full lg:block"
+          style={{ overflow: "visible" }}
+        >
+          {/* Resting dashed rope — always visible, faint */}
+          <path
+            d={pathD}
+            fill="none"
+            stroke="#3CFF73"
+            strokeOpacity={0.35}
+            strokeWidth={2}
+            strokeDasharray="8 8"
+            strokeLinecap="round"
+          />
 
-        {/* Traveling signal — a brighter dash pattern animating along the same path */}
-        <AnimatePresence>
-          {signalActive && (
-            <motion.path
-              d={pathD}
-              fill="none"
-              stroke="#9CFFC2"
-              strokeWidth={3}
-              strokeLinecap="round"
-              strokeDasharray="14 220"
-              initial={{ strokeDashoffset: 0, opacity: 1 }}
-              animate={{ strokeDashoffset: -234, opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeIn" }}
-              style={{
-                filter: "drop-shadow(0 0 6px #3CFF73)",
-              }}
-            />
-          )}
-        </AnimatePresence>
-      </svg>
+          {/* Traveling signal — a brighter dash pattern animating along the same path */}
+          <AnimatePresence>
+            {signalActive && (
+              <motion.path
+                d={pathD}
+                fill="none"
+                stroke="#9CFFC2"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeDasharray="14 220"
+                initial={{ strokeDashoffset: 0, opacity: 1 }}
+                animate={{ strokeDashoffset: -234, opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeIn" }}
+                style={{
+                  filter: "drop-shadow(0 0 6px #3CFF73)",
+                }}
+              />
+            )}
+          </AnimatePresence>
+        </svg>
+      )}
 
       {/* LEFT */}
-      <div className="relative z-20 flex w-1/2 flex-col justify-center px-14 py-12">
+      <div
+        className="
+          relative z-20 flex w-full lg:w-1/2
+          flex-col justify-center
+          px-6 py-14
+          sm:px-10 sm:py-16
+          md:px-14 md:py-12
+          items-center text-center
+          lg:items-start lg:text-left
+        "
+      >
         {/* Small Title */}
         <span
           className="
             text-xs
             font-bold
             uppercase
-            tracking-[0.35em]
+            tracking-[0.25em]
+            sm:tracking-[0.35em]
             text-[#3CFF73]
           "
         >
@@ -201,7 +246,9 @@ export default function ContactSection() {
         <h2
           className="
             mt-3
-            text-4xl
+            text-2xl
+            sm:text-3xl
+            md:text-4xl
             font-bold
             text-white
           "
@@ -214,8 +261,10 @@ export default function ContactSection() {
           className="
             mt-4
             max-w-md
-            text-[15px]
-            leading-7
+            text-sm
+            sm:text-[15px]
+            leading-6
+            sm:leading-7
             text-white/55
           "
         >
@@ -224,7 +273,7 @@ export default function ContactSection() {
         </p>
 
         {/* Form */}
-        <div className="mt-8 flex flex-col gap-4">
+        <div className="mt-8 flex w-full max-w-md flex-col gap-4">
           <input
             type="text"
             name="name"
@@ -237,9 +286,12 @@ export default function ContactSection() {
               border
               border-white/[0.06]
               bg-[#0b1410]
-              px-5
-              py-3.5
-              text-[14px]
+              px-4
+              py-3
+              sm:px-5
+              sm:py-3.5
+              text-sm
+              sm:text-[14px]
               text-white
               placeholder:text-white/35
               outline-none
@@ -260,9 +312,12 @@ export default function ContactSection() {
               border
               border-white/[0.06]
               bg-[#0b1410]
-              px-5
-              py-3.5
-              text-[14px]
+              px-4
+              py-3
+              sm:px-5
+              sm:py-3.5
+              text-sm
+              sm:text-[14px]
               text-white
               placeholder:text-white/35
               outline-none
@@ -284,9 +339,12 @@ export default function ContactSection() {
               border
               border-white/[0.06]
               bg-[#0b1410]
-              px-5
-              py-3.5
-              text-[14px]
+              px-4
+              py-3
+              sm:px-5
+              sm:py-3.5
+              text-sm
+              sm:text-[14px]
               text-white
               placeholder:text-white/35
               outline-none
@@ -316,7 +374,14 @@ export default function ContactSection() {
       </div>
 
       {/* RIGHT */}
-      <div className="relative z-20 flex w-1/2 items-center justify-center overflow-hidden">
+      <div
+        className="
+          relative z-20 flex w-full lg:w-1/2
+          items-center justify-center
+          overflow-hidden
+          py-10 sm:py-12 lg:py-0
+        "
+      >
         <AnimatePresence mode="wait">
           {!isSending && (
             <motion.div
@@ -338,6 +403,7 @@ export default function ContactSection() {
                 src="/paperplane.png"
                 alt="paper-plane"
                 priority
+                className="w-32 h-32 sm:w-44 sm:h-44 md:w-52 md:h-52 lg:w-[200px] lg:h-[200px] object-contain"
               />
             </motion.div>
           )}
@@ -348,7 +414,7 @@ export default function ContactSection() {
           {signalActive && (
             <motion.div
               key={`plane-pulse-${planeKey}`}
-              className="absolute h-28 w-28 rounded-full bg-[#3CFF73]/25 blur-2xl"
+              className="absolute h-20 w-20 sm:h-28 sm:w-28 rounded-full bg-[#3CFF73]/25 blur-2xl"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: [0, 0.7, 0], scale: [0.5, 1.3, 1.5] }}
               transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
@@ -356,48 +422,51 @@ export default function ContactSection() {
           )}
         </AnimatePresence>
 
-        <AnimatePresence>
-          {isSending && (
-            <motion.div
-              key={`plane-flight-${planeKey}`}
-              className="absolute"
-              initial={{
-                opacity: 1,
-                scale: 1,
-                x: 0,
-                y: 0,
-                rotate: 0,
-              }}
-              animate={{
-                opacity: [1, 1, 0],
-                scale: [1, 1.15, 0.5],
-                x: [0, 40, 480],
-                y: [0, -20, -340],
-                rotate: [0, -6, 18],
-              }}
-              transition={{
-                duration: 1.1,
-                ease: "easeIn",
-                times: [0, 0.25, 1],
-              }}
-            >
-              <Image
-                width={200}
-                height={200}
-                src="/paperplane.png"
-                alt="paper-plane"
-                priority
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {showRopeAndFlight && (
+          <AnimatePresence>
+            {isSending && (
+              <motion.div
+                key={`plane-flight-${planeKey}`}
+                className="absolute"
+                initial={{
+                  opacity: 1,
+                  scale: 1,
+                  x: 0,
+                  y: 0,
+                  rotate: 0,
+                }}
+                animate={{
+                  opacity: [1, 1, 0],
+                  scale: [1, 1.15, 0.5],
+                  x: [0, 40, 480],
+                  y: [0, -20, -340],
+                  rotate: [0, -6, 18],
+                }}
+                transition={{
+                  duration: 1.1,
+                  ease: "easeIn",
+                  times: [0, 0.25, 1],
+                }}
+              >
+                <Image
+                  width={200}
+                  height={200}
+                  src="/paperplane.png"
+                  alt="paper-plane"
+                  priority
+                  className="w-[200px] h-[200px] object-contain"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
 
         {/* Launch glow burst behind the plane */}
         <AnimatePresence>
           {isSending && (
             <motion.div
               key={`glow-${planeKey}`}
-              className="absolute h-40 w-40 rounded-full bg-[#3CFF73]/30 blur-3xl"
+              className="absolute h-28 w-28 sm:h-40 sm:w-40 rounded-full bg-[#3CFF73]/30 blur-3xl"
               initial={{ opacity: 0, scale: 0.4 }}
               animate={{ opacity: [0, 0.8, 0], scale: [0.4, 1.3, 1.6] }}
               transition={{ duration: 0.6, ease: "easeOut" }}
